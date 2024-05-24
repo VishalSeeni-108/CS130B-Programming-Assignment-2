@@ -35,7 +35,7 @@ main()
         for(int j = 3; j <= length; j++) 
         {      
            long long int addZero = dpTable.at(j-1).numStrings % (long long int)(pow(10,9) + 7); 
-           long long int addOne = ((dpTable.at(j-1).numStrings % (long long int)(pow(10,9) + 7)) - (dpTable.at(j-1).numEndOne % (long long int)(pow(10,9) + 7))) % (long long int)(pow(10,9) + 7); 
+           long long int addOne = dpTable.at(j-2).numStrings % (long long int)(pow(10,9) + 7); 
 
            dpData newCase; 
            newCase.numStrings = ((addZero  % (long long int)(pow(10,9) + 7)) + (addOne % (long long int)(pow(10,9) + 7))) % (long long int)(pow(10,9) + 7); 
