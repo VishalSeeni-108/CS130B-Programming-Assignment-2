@@ -21,24 +21,33 @@ main()
     for(int i = 0; i < numWords; i++)
     {
         string target; 
-        map<string, bool> substringValidity; //TODO: Getting memory limit exceeded error - only ever use last 2 calculations, so modify this to only store the last 2
+        //map<string, bool> substringValidity; //Deprecated: Getting memory limit exceeded error - only ever use last 2 calculations, modified to only store last 2
+        bool prevTwo[2]; //Stores validity of previous two substrings
 
         cin >> target; 
 
         //Base cases
-        substringValidity[target.substr(0,1)] = find(oneLetterElements.begin(), oneLetterElements.end(), target.substr(0,1)) != oneLetterElements.end();  
-        substringValidity[target.substr(0, 2)] = (find(twoLetterElements.begin(), twoLetterElements.end(), target.substr(0,2)) != twoLetterElements.end()) || ((substringValidity[target.substr(0,1)] == true) && (find(oneLetterElements.begin(), oneLetterElements.end(), target.substr(1,1)) != oneLetterElements.end())); 
+        // substringValidity[target.substr(0,1)] = find(oneLetterElements.begin(), oneLetterElements.end(), target.substr(0,1)) != oneLetterElements.end();  
+        // substringValidity[target.substr(0, 2)] = (find(twoLetterElements.begin(), twoLetterElements.end(), target.substr(0,2)) != twoLetterElements.end()) || ((substringValidity[target.substr(0,1)] == true) && (find(oneLetterElements.begin(), oneLetterElements.end(), target.substr(1,1)) != oneLetterElements.end())); 
         // cout << substringValidity[target.substr(0,1)] << endl;      
         // cout << substringValidity[target.substr(0,2)] << endl; 
+
+        prevTwo[0] = find(oneLetterElements.begin(), oneLetterElements.end(), target.substr(0,1)) != oneLetterElements.end();  
+        prevTwo[1] = (find(twoLetterElements.begin(), twoLetterElements.end(), target.substr(0,2)) != twoLetterElements.end()) || ((prevTwo[0]== true) && (find(oneLetterElements.begin(), oneLetterElements.end(), target.substr(1,1)) != oneLetterElements.end())); 
+ 
 
         //Inductive case
         for(int n = 3; n <= target.length(); n++)
         {
-            substringValidity[target.substr(0, n)] = ((substringValidity[target.substr(0,n-1)] == true) && (find(oneLetterElements.begin(), oneLetterElements.end(), target.substr(n-1,1)) != oneLetterElements.end())) || ((substringValidity[target.substr(0,n-2)] == true) && (find(twoLetterElements.begin(), twoLetterElements.end(), target.substr(n-2,2)) != twoLetterElements.end())); 
+            //substringValidity[target.substr(0, n)] = ((substringValidity[target.substr(0,n-1)] == true) && (find(oneLetterElements.begin(), oneLetterElements.end(), target.substr(n-1,1)) != oneLetterElements.end())) || ((substringValidity[target.substr(0,n-2)] == true) && (find(twoLetterElements.begin(), twoLetterElements.end(), target.substr(n-2,2)) != twoLetterElements.end())); 
             //cout << target.substr(0,n) << ": " << substringValidity[target.substr(0,n)] << endl;
+
+            bool tempValidity = ((prevTwo[1] == true) && (find(oneLetterElements.begin(), oneLetterElements.end(), target.substr(n-1,1)) != oneLetterElements.end())) || ((prevTwo[0] == true) && (find(twoLetterElements.begin(), twoLetterElements.end(), target.substr(n-2,2)) != twoLetterElements.end()));  
+            prevTwo[0] = prevTwo[1]; 
+            prevTwo[1] = tempValidity;  
         } 
 
-        if(substringValidity[target])
+        if(prevTwo[1])
         {
             cout << "YES" << endl; 
         }
